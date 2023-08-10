@@ -10,6 +10,7 @@ class Server {
         this.port = process.env.PORT
 
         this.paths = {
+            /* 1.paso Auth */
             auth:       '/api/auth',
             centro:       '/api/centro',
             camper: '/api/camper',
@@ -38,6 +39,8 @@ class Server {
     }
 
     routes(){
+        /* 2.Paso Agregar Ruta (auth) */ //pasamos a crear la ruta
+        this.app.use(this.paths.auth, require('../routes/auth.routes.js'));
         this.app.use(this.paths.camper, require('../routes/camper.routes.js'));
         this.app.use(this.paths.centro, require('../routes/centro.routes.js'));
     }

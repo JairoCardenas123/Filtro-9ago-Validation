@@ -1,44 +1,51 @@
+/* 7.Importamos response de express */
 const {response} = require('express');
 const Camper = require('../models/Camper.js');
-const bcryptjs = require('bcryptjs');
+const bcryptjs = require('bcryptjs')
 const { generateJWT } = require('../helpers/generate.JWT.js');
 
-const login = async (req, res=response)=>{
 
-    const {email, password} = req.body;
+/* 8.Creamos la funcioon login  */
+const login = async (req, res=response)=>{ //agregamos el res=response
+    const {email,password} = req.body; //17. destructuramos
     try {
-        const usuario = await Camper.findOne({email});
+        //18. Verificar si existe el email en la base de datos
+        const emailExiste = await Camper.findOne({email}) 
+        if(!emailExiste){
+            return res.status(400).json({
+                msg:"Email no existe"
+            })
+        }
+        //19.Verificar si el usuario esta activo
+        if(!emailExiste.estado){
+            return res.status(400).json({
+                msg:"el Usuario no esta activo"
+            })
+        } 
 
-        if (!usuario){
+        //20.Verificar si el password es correcto y coincide con la base de datos
+
+        const passwordValido = bcryptjs.compareSync(password,emailExiste.password);
+
+        if(!passwordValido){
             return res.status(400).json({
-                msg:"Camper no es correcto"
+                msg:"El password no es correcto"
             })
         }
-        if (!usuario.estado){
-            return res.status(400).json({
-                msg:"Estado Inactivo"
-            })
-        }
-        const validPassword = bcryptjs.compareSync(password, usuario.password);
-        if (!validPassword){
-            return res.status(400).json({
-                msg:"Password Incorrecto"
-            })
-        }
-        const token = await generateJWT(usuario.id)
 
         res.json({
-           usuario,
-           token
+            msg:"All good duuuuuude"
         })
-        
     } catch (error) {
         console.log(error);
-        return res.json({
-            msg:"contacte al servicio tecnico"
-        })
+        return res.status(500).json({
+            msg: "Error en el servidor"
+        });
     }
+    /* 9.agregamos el formato json */
+    
 }
+
 
 module.exports = {
     login

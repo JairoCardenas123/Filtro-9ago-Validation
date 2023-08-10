@@ -3,8 +3,7 @@ const {Schema, model} = require('mongoose')
 const camperSchema = Schema({
     nombre:{
         type:String,
-        required: [true, 'El nombre es obligatorio'],
-        unique: true
+        required: [true, 'Name is required']
     },
     tipoIdentificacion:{
         type:String,
@@ -18,13 +17,12 @@ const camperSchema = Schema({
     },
     email:{
         type:String,
-        required: true, 
-        unique: true
+        required: [true, 'Email is required'],
+        unique:true
     },
     password:{
         type:String,
-        required: true, 
-        unique: true
+        required:true
     },
     level:{
         type:String,
@@ -32,10 +30,13 @@ const camperSchema = Schema({
         unique: true
     },
     estado:{
-        type:String,
-        required:true, 
-        unique: true
+        type:Boolean,
+        default: true
     },
+    googleSignIn :{
+        type:Boolean,
+        default: true
+    },  
     imagen:{
         type:String,
         required: true, 
